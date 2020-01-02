@@ -481,6 +481,17 @@ var Reflect;
             return OrdinaryOwnMetadataKeys(target, propertyKey);
         }
         exporter("getOwnMetadataKeys", getOwnMetadataKeys);
+        function getOwnPropertyKeys(target) {
+            if (!IsObject(target))
+                throw new TypeError();
+            var targetMetadata = Metadata.get(target);
+            if (IsUndefined(targetMetadata)) {
+                targetMetadata = new _Map();
+                Metadata.set(target, targetMetadata);
+            }
+            return targetMetadata.keys();
+        }
+        exporter("getOwnPropertyKeys", getOwnPropertyKeys);
         /**
          * Deletes the metadata entry from the target object with the provided key.
          * @param metadataKey A key used to store and retrieve metadata.

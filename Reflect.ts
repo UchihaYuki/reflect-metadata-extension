@@ -572,6 +572,8 @@ namespace Reflect {
       */
     export declare function getOwnMetadataKeys(target: any, propertyKey: string | symbol): any[];
 
+    export declare function getOwnPropertyKeys(target: any): IterableIterator<string | symbol | undefined>
+
     /**
       * Deletes the metadata entry from the target object with the provided key.
       * @param metadataKey A key used to store and retrieve metadata.
@@ -1139,6 +1141,20 @@ namespace Reflect {
         }
 
         exporter("getOwnMetadataKeys", getOwnMetadataKeys);
+
+        function getOwnPropertyKeys(target: any): IterableIterator<string | symbol | undefined>
+        {
+            if (!IsObject(target)) throw new TypeError();
+
+            let targetMetadata = Metadata.get(target);
+            if (IsUndefined(targetMetadata)) {
+                targetMetadata = new _Map<string | symbol | undefined, Map<any, any>>();
+                Metadata.set(target, targetMetadata);
+            }
+            return targetMetadata.keys();
+        }
+
+        exporter("getOwnPropertyKeys", getOwnPropertyKeys);
 
         // 4.1.10 Reflect.deleteMetadata(metadataKey, target [, propertyKey])
         // https://rbuckton.github.io/reflect-metadata/#reflect-deletemetadata
